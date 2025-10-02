@@ -27,18 +27,22 @@ export default function App() {
   };
 
   const handlePaste = (e) => {
-    e.preventDefault();
-    const pastedText = e.clipboardData.getData('text');
-    const extractedEmails = extractEmails(pastedText);
+    // Don't prevent default on mobile to ensure paste works
+    const pastedText = e.clipboardData?.getData('text') || '';
 
-    if (extractedEmails.length > 0) {
-      setSelectedEmails(prev => {
-        const combined = [...prev, ...extractedEmails];
-        return [...new Set(combined)];
-      });
-      setRecipients('');
-    } else {
-      setRecipients(pastedText);
+    if (pastedText) {
+      e.preventDefault();
+      const extractedEmails = extractEmails(pastedText);
+
+      if (extractedEmails.length > 0) {
+        setSelectedEmails(prev => {
+          const combined = [...prev, ...extractedEmails];
+          return [...new Set(combined)];
+        });
+        setRecipients('');
+      } else {
+        setRecipients(pastedText);
+      }
     }
   };
 
@@ -282,8 +286,8 @@ export default function App() {
                 <button
                   onClick={() => setEmailType('text')}
                   className={`group p-8 rounded-3xl border-3 transition-all transform hover:scale-105 ${emailType === 'text'
-                      ? 'bg-gradient-to-br from-cyan-500 to-blue-600 border-cyan-300 shadow-2xl scale-105'
-                      : 'bg-white/5 backdrop-blur-xl border-white/20 hover:bg-white/10'
+                    ? 'bg-gradient-to-br from-cyan-500 to-blue-600 border-cyan-300 shadow-2xl scale-105'
+                    : 'bg-white/5 backdrop-blur-xl border-white/20 hover:bg-white/10'
                     }`}
                 >
                   <FileText className={`w-12 h-12 mx-auto mb-4 ${emailType === 'text' ? 'text-white' : 'text-cyan-300'}`} />
@@ -295,8 +299,8 @@ export default function App() {
                 <button
                   onClick={() => setEmailType('html')}
                   className={`group p-8 rounded-3xl border-3 transition-all transform hover:scale-105 ${emailType === 'html'
-                      ? 'bg-gradient-to-br from-purple-500 to-pink-600 border-purple-300 shadow-2xl scale-105'
-                      : 'bg-white/5 backdrop-blur-xl border-white/20 hover:bg-white/10'
+                    ? 'bg-gradient-to-br from-purple-500 to-pink-600 border-purple-300 shadow-2xl scale-105'
+                    : 'bg-white/5 backdrop-blur-xl border-white/20 hover:bg-white/10'
                     }`}
                 >
                   <Code className={`w-12 h-12 mx-auto mb-4 ${emailType === 'html' ? 'text-white' : 'text-purple-300'}`} />
@@ -440,8 +444,8 @@ export default function App() {
             {/* Status */}
             {status && (
               <div className={`mb-10 p-8 rounded-3xl flex items-center gap-5 border-3 ${status.type === 'success'
-                  ? 'border-emerald-400/50 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 backdrop-blur-xl text-emerald-100'
-                  : 'border-red-400/50 bg-gradient-to-r from-red-500/20 to-pink-500/20 backdrop-blur-xl text-red-100'
+                ? 'border-emerald-400/50 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 backdrop-blur-xl text-emerald-100'
+                : 'border-red-400/50 bg-gradient-to-r from-red-500/20 to-pink-500/20 backdrop-blur-xl text-red-100'
                 } shadow-2xl`}>
                 {status.type === 'success' ? (
                   <CheckCircle className="w-10 h-10 flex-shrink-0" />
@@ -457,8 +461,8 @@ export default function App() {
               onClick={sendEmail}
               disabled={loading || selectedEmails.length === 0}
               className={`w-full py-8 px-12 rounded-3xl font-black text-white text-2xl flex items-center justify-center gap-5 border-none transition-all transform ${loading || selectedEmails.length === 0
-                  ? 'bg-gray-600 cursor-not-allowed opacity-50'
-                  : 'bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 shadow-2xl hover:scale-105 hover:shadow-purple-500/50 cursor-pointer'
+                ? 'bg-gray-600 cursor-not-allowed opacity-50'
+                : 'bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 shadow-2xl hover:scale-105 hover:shadow-purple-500/50 cursor-pointer'
                 }`}
             >
               {loading ? (
